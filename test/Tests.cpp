@@ -1,5 +1,7 @@
 #include "gtest/gtest.h"
 
+#include "AnyMapTests.hpp"
+
 
 
 int main(int argc, char **argv)
