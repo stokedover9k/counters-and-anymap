@@ -1,5 +1,8 @@
+#ifndef __ANY_MAP_HPP__
+#define __ANY_MAP_HPP__
+
 /*! 
- * @file AnyMap.h
+ * @file AnyMap.hpp
  * @brief The MapTypeErasure namespace contains the AnyMap template class.
  * This template is a map wrapper which should work for any one-to-one
  * map with a standard interface (e.g. std::map, boost::unordered_map).
@@ -160,7 +163,10 @@ namespace MapTypeErasure
 	for( AnyMap::const_iterator i(begin()); i != end(); ++i ) {
 	  AnyMap::const_iterator const& oi( other.find( i->first ) );
 	  if( oi == other.end() || oi->second != i->second )
-	    return false;
+	    {
+	      std::cout << "not equal at: " << i->first << std::endl;
+	      return false;
+	    }
 	}
 	return true;
       }
@@ -179,17 +185,18 @@ namespace MapTypeErasure
     template<typename MapType>
     struct MapModel : MapConcept
     {
-      // construct from map
-      explicit MapModel( MapType const & m = MapType() ) 
-	: map_( m ) {
-      }
+      MapModel() : map_() {}
 
-      explicit MapModel( MapType && m ) 
-	: map_( std::move(m) ) { 
-      }
-      
+      // construct from map
+      explicit MapModel( MapType m ) 
+      { using std::swap;  swap(map_, m); }
+
       // copy constructor
       MapModel( const MapModel& o ) : map_( o.map_ ) {}
+
+      // move constuctor
+      MapModel( MapModel && other )
+      { using std::swap;  swap(map_, other.map_); }
       
       virtual ~MapModel() {}
 
@@ -244,15 +251,30 @@ namespace MapTypeErasure
 
     /*! @brief Copies the other AnyMap's underlying container. */
     AnyMap( AnyMap const & o ) : mapConcept_( o.mapConcept_->clone() ) {}
+
+    /*! @brief Steals the temporary AnyMap's underlying container. */
+    AnyMap( AnyMap && o ) : mapConcept_( o.mapConcept_ ) { o.mapConcept_ = 0; }
     
     ~AnyMap() { delete mapConcept_; }
 
-    /*! @brief Assignment using the copy-and-swap idiom. 
-    *   @return This AnyMap. */
-    AnyMap& operator=(AnyMap other) { other.swap(*this);  return *this; }
+    /*! @brief Copies the contents of the other map.
+     *  @return This AnyMap. */
+    AnyMap& operator=(AnyMap const& other)
+    {
+      if( this != &other ) {
+	AnyMap<K, V> tmp(other);
+	swap( tmp );
+      }
+      return *this;
+    }
+
+    /*! @brief Swaps contents with the temporary other map.
+     *  @return This AnyMap. */
+    AnyMap& operator=(AnyMap && other) { other.swap(*this);  return *this; }
     
     /*! @brief Swaps contents with the other AnyMap. */
-    void swap(AnyMap& other)   { std::swap( mapConcept_, other.mapConcept_ ); }
+    void swap(AnyMap& other) 
+    { using std::swap;  swap( mapConcept_, other.mapConcept_ ); }
   
     /*!
      * @name Size and Capacity
@@ -349,3 +371,4 @@ namespace MapTypeErasure
 
 }; // namespace MapTypeErasure
 
+#endif // __ANY_MAP_HPP__
