@@ -15,13 +15,13 @@
 #include "MapTypeErasure/AnyMap.hpp"
 #include "Util/NumCache.h"
 
-#ifndef  COUNT_T_DEF
-#define  COUNT_T_DEF 1
-typedef double _count_t;
-#endif //COUNT_T_DEF
 
 namespace Counters
 {
+#ifndef  COUNT_T_DEF
+#define  COUNT_T_DEF 1
+  typedef double CountersCount_t;
+#endif //COUNT_T_DEF
   
   template <typename V>
   class Counter;
@@ -66,7 +66,7 @@ namespace Counters
     /*! @brief Type parameter V a.k.a. type of values whose counts are stored. */
     typedef V Value_t;
     /*! @brief Type used for stored counts (currently double). */
-    typedef _count_t Count_t;
+    typedef CountersCount_t Count_t;
     /*! @brief Type of map used to maintain value-count associations. */
     typedef MapTypeErasure::AnyMap<V, Count_t> CoreMap_t;
     /*! @brief The type to which the iterators dereference (should be 
@@ -88,7 +88,7 @@ namespace Counters
     Counter( Counter && other );
 
     /*! @brief Constructs the Counter with the given map, copying or moving it.*/
-    Counter( CoreMap_t coreMap );
+    explicit Counter( CoreMap_t coreMap );
     /*!
      * @brief Increments all the elements in the range by the given count.
      *
@@ -102,7 +102,7 @@ namespace Counters
      * @param count The count by which each occurence of a value found in the
      * range is incremented.
      */
-    template<typename InputIterator>
+    template <typename InputIterator>
     Counter( InputIterator i1, InputIterator i2, Count_t count=1.0 );
 
     /*!
@@ -430,7 +430,7 @@ namespace Counters
 
     CoreMap_t coreMap_;
 
-    // new cache:
+    // total cache:
     typedef NumCache<Count_t> CountCache;
     CountCache *cachedTotal_;
 

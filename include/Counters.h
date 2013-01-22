@@ -8,6 +8,9 @@
 #ifndef __COUNTERS_h__
 #define __COUNTERS_h__
 
+namespace Counters
+{
 
+};
 
 #endif // __COUNTERS_h__

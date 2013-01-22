@@ -95,7 +95,7 @@ namespace Counters
   template <typename V>
   void Counter<V>::incrementCount( V && val, Count_t count )
   {
-    coreMap_[val] += count;
+    coreMap_[std::move(val)] += count;
     *cachedTotal_ += count;
   }
 

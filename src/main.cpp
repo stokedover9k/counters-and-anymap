@@ -1,9 +1,11 @@
 #include <iostream>
 
 #include "IteratorTypeErasure/any_iterator/any_iterator.hpp"
-using namespace IteratorTypeErasure;
 
 #include "MapTypeErasure/AnyMap.hpp"
+
+#include "CounterFactories.h"
+#include "CounterMap.h"
 
 #include <boost/unordered_map.hpp>
 #include <map>
@@ -20,6 +22,7 @@ struct MyHash : boost::hash<std::string>
 int main()
 {
   using namespace std;
+  using namespace IteratorTypeErasure;
   using namespace MapTypeErasure;
 
   cout << "starting main..." << endl;
@@ -107,6 +110,17 @@ int main()
 
   AnyMap<string, int> defMap;
   defMap.begin();
+
+  cout << "Counter Factories" << endl;
+  {
+    typedef boost::unordered_map<string, double> UnderlyingMapType;
+    Counters::MapTypeCounterFactory<std::string, UnderlyingMapType> f;
+    Counters::Counter<std::string> counter( f.createCounter() );
+    counter.incrementCount("a", 1);
+    counter.setCount("b", 2);
+    counter.incrementCount("b", 3);
+    cout << counter << endl;
+  }
 
   ///////////////////////////////////////////
   cout << "finished main." << endl;
