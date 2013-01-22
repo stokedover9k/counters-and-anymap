@@ -35,8 +35,8 @@ namespace Counters
    *
    * The Counter is essentially a map (this implementation uses AnyMap as the
    * underlying map). The key type of this map is the Counter template's V type
-   * parameter. The mapped type of the this map is the Counter::Count_t type
-   * (currently, this is 'double').
+   * parameter. The mapped type of this map is the Counter::Count_t type (currently,
+   * this is 'double').
    *
    * Additionally to keeping the counts associated with each value, the Counter
    * keeps a cache. This cache stores the total count (the sum of all counts 
@@ -106,16 +106,16 @@ namespace Counters
     Counter( InputIterator i1, InputIterator i2, Count_t count=1.0 );
 
     /*!
-     * @brief Copies the values and their associated counts as well as the 
-     * cache.
+     * @brief Standard Assignment. Copies the values and their associated counts as 
+     * well as the cache.
      * @param rhs Original counter to be copied.
      * @return This counter.
      */
     Counter& operator=( Counter const& rhs );
 
     /*!
-     * @brief Steals the resources from a temporary Counter rhs equating this
-     * Counter to it.
+     * @brief Move Assignment. Steals the resources from a temporary Counter rhs 
+     * equating this Counter to it.
      * @param rhs Oirignal counter to be equated to.
      * @return This counter.
      */
@@ -123,7 +123,7 @@ namespace Counters
 
     /*!
      * @brief Swaps contents with another Counter in constant time (assuming
-     * constant time swap of the underlying map.
+     * constant time swap of the underlying maps.
      * @param other Counter to swap contents with.
      */
     void swap( Counter& other );
@@ -286,7 +286,7 @@ namespace Counters
      * @brief Equivalent to !(this->operator==(o)).
      * @param o Other counter to be compared.
      * @return TRUE if the counters differ by at least one value or a value's 
-     * associated value.
+     * associated value, FALSE otherwise.
      */
     bool operator!=( Counter const& o ) const;
 
@@ -298,7 +298,8 @@ namespace Counters
      * @param other Other counter to be compared to this counter.
      * @param precision The difference allowed between the corresponding counts
      * before the couters are declared not equal.
-     * @return TRUE if all counts are within the specified margin, FALSE 
+     * @return TRUE if all corresponding counts exist and are within the specified
+     * margin, FALSE 
      * otherwise.
      */
     bool equals(const Counter& other, Count_t precision =

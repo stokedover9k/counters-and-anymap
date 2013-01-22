@@ -130,7 +130,7 @@ namespace Counters
       {
 	i->second.normalize();
       }
-    cachedTotal_->set( 1.0 * size() );
+    cachedTotal_->reset();
   }
 
   //------------------- Lookup ---------------------
@@ -236,7 +236,122 @@ namespace Counters
   
   //--------------------- Traversal --------------------------------
 
-  
+  template <typename K, typename V>
+  typename CounterMap<K, V>::ConstIterator CounterMap<K, V>::begin(void) const
+  {
+    return coreMap_.begin();
+  }
+
+  template <typename K, typename V>
+  typename CounterMap<K, V>::ConstIterator CounterMap<K, V>::end(void) const
+  {
+    return coreMap_.end();
+  }
+
+  //--------------------- Equality ---------------------------------
+
+  template <typename K, typename V>
+  bool CounterMap<K, V>::operator==(CounterMap const& other) const
+  {
+    return coreMap_ == other.coreMap_;
+  }
+
+  template <typename K, typename V>
+  bool CounterMap<K, V>::operator!=(CounterMap const& other) const
+  {
+    return !(operator==(other));
+  }
+
+  template <typename K, typename V>
+  bool CounterMap<K, V>::equals(const CounterMap& other, Count_t precision) const
+  {
+    if( this == &other )           return true;
+    if( size() != other.size() )   return false;
+    for( typename CounterMap<K, V>::CoreMap_t::const_iterator i(coreMap_.begin());
+	 i != coreMap_.end(); ++i )
+      {
+	typename CounterMap<K, V>::CoreMap_t::const_iterator 
+	  oi( other.coreMap_.find( i->first ) );
+	
+	if( oi == other.coreMap_.end() || !i->second.equals( oi->second ) )
+	  return false;
+      }
+    return true;
+  }
+
+  template <typename K, typename V>
+  CounterMap<K, V>& CounterMap<K, V>::operator+=(CounterMap const& rhs)
+  {
+    for( typename CounterMap<K, V>::ConstIterator i( rhs.begin() );
+	 i != rhs.end(); ++i )
+      {
+	ensureCounter(i->first) += i->second;
+      }
+
+    return *this;
+  }
+
+  template <typename K, typename V>
+  CounterMap<K, V>& CounterMap<K, V>::operator-=(CounterMap const& rhs)
+  {
+    for( typename CounterMap<K, V>::ConstIterator i( rhs.begin() );
+	 i != rhs.end(); ++i )
+      {
+	ensureCounter(i->first) -= i->second;
+      }
+
+    return *this;
+  }
+
+  template <typename K, typename V>
+  CounterMap<K, V> operator+(CounterMap<K, V> const& lhs, CounterMap<K, V> const& rhs)
+  { CounterMap<K, V> tmp = lhs;  tmp += rhs; return tmp; }
+
+  template <typename K, typename V>
+  CounterMap<K, V> operator+(CounterMap<K, V> && tmp, CounterMap<K, V> const& rhs)
+  { tmp += rhs; return std::move(tmp); }
+
+  template <typename K, typename V>
+  CounterMap<K, V> operator+(CounterMap<K, V> const& lhs, CounterMap<K, V> && tmp)
+  { tmp += lhs; return std::move(tmp); }
+
+  template <typename K, typename V>
+  CounterMap<K, V> operator+(CounterMap<K, V> && tmp, CounterMap<K, V> && rhs)
+  { tmp += rhs; return std::move(tmp); }
+
+  template <typename K, typename V>
+  CounterMap<K, V> operator-(CounterMap<K, V> const& lhs, CounterMap<K, V> const& rhs)
+  { CounterMap<K, V> tmp = lhs; tmp -= rhs; return tmp; }
+
+  template <typename K, typename V>
+  CounterMap<K, V> operator-(CounterMap<K, V> && tmp, CounterMap<K, V> const& rhs)
+  { tmp -= rhs; return std::move(tmp); }
+
+  template <typename K, typename V>
+  CounterMap<K, V> operator-(CounterMap<K, V> const& lhs, CounterMap<K, V> && tmp)
+  { tmp -= lhs; return std::move(tmp); }
+
+  template <typename K, typename V>
+  CounterMap<K, V> operator-(CounterMap<K, V> && tmp, CounterMap<K, V> && rhs)
+  { tmp -= rhs; return std::move(tmp); }
+
+  //----------------- Output Operator ------------------------
+
+  template <typename K, typename V>
+  std::ostream& operator<<(std::ostream& os, CounterMap<K, V> const& counterMap)
+  {
+    os << "[\n";
+    if( counterMap.size() > 0 )
+      {
+	typename CounterMap<K, V>::ConstIterator i(counterMap.begin());
+	os << " " << i->first << MAPPING_DELIMITER << i->second;
+	for( ; ++i != counterMap.end(); )
+	  os << "\n " << i->first << MAPPING_DELIMITER << i->second;
+      }
+    return os << "]";
+  }
+
+
 };
 
 #endif // __COUNTER_MAP_IMPL_HPP__

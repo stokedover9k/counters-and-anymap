@@ -381,8 +381,7 @@ namespace Counters
 	for( ; ++i != counter.end(); )
 	  os << ", " << i->first << MAPPING_DELIMITER << i->second;
       }
-    os << "]";
-    return os;
+    return os << "]";
   }
 
 };
