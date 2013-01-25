@@ -26,7 +26,6 @@ namespace Counters
   template <typename K, typename V> CounterMap<K, V> operator-(CounterMap<K, V> const&, CounterMap<K, V> const&);
   template <typename K, typename V> CounterMap<K, V> operator-(CounterMap<K, V>     &&, CounterMap<K, V> const&);
   template <typename K, typename V> CounterMap<K, V> operator-(CounterMap<K, V>     &&, CounterMap<K, V>     &&);
-  template <typename K, typename V> CounterMap<K, V> operator-(CounterMap<K, V> const&, CounterMap<K, V>     &&);
 
   /*!
    * @brief Outputs the CounterMap in a human readable format.
@@ -57,6 +56,7 @@ namespace Counters
   template <typename K, typename V>
   class CounterMap
   {
+  public:
     /*! @brief Type parameter K a.k.a. type of top-level keys in the mapping. */
     typedef K Key_t;
     /*! @brief Type parameter V a.k.a. type of values stored by the mapped counters.*/
@@ -75,7 +75,6 @@ namespace Counters
     /*! @brief Unsigned integer type that can represent any non-negative value. */
     typedef typename CoreMap_t::size_type Size_t;
 
-  public:
     /*!  @name Constructors, Destructor, Assignment, and Swap
      *   @{
      */
@@ -158,6 +157,19 @@ namespace Counters
     void setCount(K     && key, V     && val, Count_t count);
     /*! @overload setCount(K const& key, V const& val, Count_t count); */
     void setCount(K const& key, V     && val, Count_t count);
+
+    /*!
+     * @brief Removes the key and its associated Counter.
+     * @param key Key to be removed from the mapping.
+     */
+    void remove(K const& key);
+
+    /*!
+     * @brief Removes the count associated with the key-value pair if it exists.
+     * @param key Key under which a count is removed.
+     * @param val Value which is removed from the key's Counter.
+     */
+    void remove(K const& key, V const& val);
 
     /*!
      * @brief Calls normalize on each of the stored counters.
@@ -344,7 +356,7 @@ namespace Counters
     /*! @overload operator- <K, V>(CounterMap const&, CounterMap const&) */
     friend CounterMap operator- <K, V>(CounterMap     &&, CounterMap     &&);
     /*! @overload operator- <K, V>(CounterMap const&, CounterMap const&) */
-    friend CounterMap operator- <K, V>(CounterMap const&, CounterMap     &&);
+    //friend CounterMap operator- <K, V>(CounterMap const&, CounterMap     &&);
     /*!  @} */
     
   protected:

@@ -164,7 +164,6 @@ namespace MapTypeErasure
 	  AnyMap::const_iterator const& oi( other.find( i->first ) );
 	  if( oi == other.end() || oi->second != i->second )
 	    {
-	      std::cout << "not equal at: " << i->first << std::endl;
 	      return false;
 	    }
 	}

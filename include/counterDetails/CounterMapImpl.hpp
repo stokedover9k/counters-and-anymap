@@ -15,7 +15,7 @@ namespace Counters
   CounterMap<K, V>::CounterMap( CounterMap<K, V> const & other )
     : coreMap_(other.coreMap_),
       counterFactory_(other.counterFactory_->clone()),
-      cachedTotal_(new CountCache(other.cacheTotal_))
+      cachedTotal_(new CountCache(*other.cachedTotal_))
   {}
 
   template <typename K, typename V>
@@ -46,14 +46,16 @@ namespace Counters
   CounterMap<K, V>& CounterMap<K, V>::operator=(CounterMap<K, V> const & other)
   {
     coreMap_ = other.coreMap_;
-    counterFactory_ = other.counterFactory_.clone();
-    cachedTotal_ = *other.cachedTotal_;
+    counterFactory_ = other.counterFactory_->clone();
+    *cachedTotal_ = *other.cachedTotal_;
+    return *this;
   }
 
   template <typename K, typename V>
   CounterMap<K, V>& CounterMap<K, V>::operator=(CounterMap<K, V> && other)
   {
     swap( other );
+    return *this;
   }
 
   template <typename K, typename V>
@@ -64,7 +66,7 @@ namespace Counters
     std::swap(cachedTotal_, other.cachedTotal_);
   }
 
-  //--------------------------- Modifiers -------------------------------------------
+  //--------------------------- Modifiers ---------------------------------------
 
   template <typename K, typename V>
   void CounterMap<K, V>::incrementCount(K const& key, V const& val, Count_t count)
@@ -123,6 +125,22 @@ namespace Counters
   }
 
   template <typename K, typename V>
+  void CounterMap<K, V>::remove(K const& key)
+  {
+    if( coreMap_.erase(key) > 0 )
+      cachedTotal_->reset();
+  }
+
+  template <typename K, typename V>
+  void CounterMap<K, V>::remove(K const& key, V const& val)
+  {
+    typename CounterMap<K, V>::CoreMap_t::iterator i( coreMap_.find(key) );
+    if( i != coreMap_.end() )
+      i->second.remove(val);
+  }
+
+
+  template <typename K, typename V>
   void CounterMap<K, V>::conditionalNormalize(void)
   {
     for( typename CounterMap<K, V>::CoreMap_t::iterator i( coreMap_.begin() );
@@ -157,7 +175,7 @@ namespace Counters
   template <typename K, typename V>
   typename CounterMap<K, V>::Size_t CounterMap<K, V>::size(K const& key) const
   {
-    typename CounterMap<K, V>::Counter_t *counter = getCounter(key);
+    typename CounterMap<K, V>::Counter_t const *counter = getCounter(key);
     return counter == NULL ? 0 : counter->size();
   }
 
@@ -170,7 +188,7 @@ namespace Counters
   template <typename K, typename V>
   typename CounterMap<K, V>::Count_t CounterMap<K, V>::getCount(K const& key, V const& val) const
   {
-    typename CounterMap<K, V>::Counter_t *counter = getCounter(key);
+    typename CounterMap<K, V>::Counter_t const *counter = getCounter(key);
     return counter == NULL ? 0 : counter->getCount(val);
   }
 
@@ -192,7 +210,7 @@ namespace Counters
   template <typename K, typename V>
   typename CounterMap<K, V>::Count_t CounterMap<K, V>::totalCount(K const& key) const
   {
-    typename CounterMap<K, V>::Counter_t *counter = getCounter(key);
+    typename CounterMap<K, V>::Counter_t const *counter = getCounter(key);
     return counter == NULL ? 0 : counter->totalCount();
   }
 
@@ -215,23 +233,23 @@ namespace Counters
   template <typename K, typename V>
   Counter<V>& CounterMap<K, V>::ensureCounter(K const& key)
   {
-    typename CounterMap<K, V>::CoreMap_t::const_iterator i( coreMap_.find(key) );
+    typename CounterMap<K, V>::CoreMap_t::iterator i( coreMap_.find(key) );
     if( i != coreMap_.end() )
       return i->second;
     return 
       coreMap_.insert(typename CounterMap<K, V>::CoreMap_t::value_type(key, 
-								       counterFactory_->createCounter()))->first->second;
+								       counterFactory_->createCounter())).first->second;
   }
   
   template <typename K, typename V>
   Counter<V>& CounterMap<K, V>::ensureCounter(K && key)
   {
-    typename CounterMap<K, V>::CoreMap_t::const_iterator i( coreMap_.find(key) );
+    typename CounterMap<K, V>::CoreMap_t::iterator i( coreMap_.find(key) );
     if( i != coreMap_.end() )
       return i->second;
     return
       coreMap_.insert(typename CounterMap<K, V>::CoreMap_t::value_type(std::move(key),
-								       counterFactory_->createCounter()))->first->second;
+								       counterFactory_->createCounter())).first->second;
   }
   
   //--------------------- Traversal --------------------------------
@@ -273,7 +291,7 @@ namespace Counters
 	typename CounterMap<K, V>::CoreMap_t::const_iterator 
 	  oi( other.coreMap_.find( i->first ) );
 	
-	if( oi == other.coreMap_.end() || !i->second.equals( oi->second ) )
+	if( oi == other.coreMap_.end() || !i->second.equals( oi->second, precision ) )
 	  return false;
       }
     return true;
@@ -328,10 +346,6 @@ namespace Counters
   { tmp -= rhs; return std::move(tmp); }
 
   template <typename K, typename V>
-  CounterMap<K, V> operator-(CounterMap<K, V> const& lhs, CounterMap<K, V> && tmp)
-  { tmp -= lhs; return std::move(tmp); }
-
-  template <typename K, typename V>
   CounterMap<K, V> operator-(CounterMap<K, V> && tmp, CounterMap<K, V> && rhs)
   { tmp -= rhs; return std::move(tmp); }
 
@@ -344,9 +358,9 @@ namespace Counters
     if( counterMap.size() > 0 )
       {
 	typename CounterMap<K, V>::ConstIterator i(counterMap.begin());
-	os << " " << i->first << MAPPING_DELIMITER << i->second;
+	os << " " << i->first << MAPPING_DELIMITER << i->second << "\n";
 	for( ; ++i != counterMap.end(); )
-	  os << "\n " << i->first << MAPPING_DELIMITER << i->second;
+	  os << " " <<  i->first << MAPPING_DELIMITER << i->second << "\n";
       }
     return os << "]";
   }

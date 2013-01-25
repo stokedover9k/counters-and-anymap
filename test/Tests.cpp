@@ -5,6 +5,7 @@
 
 #include "AnyMapTests.hpp"
 #include "CounterTests.hpp"
+#include "CounterMapTests.hpp"
 
 
 

@@ -112,7 +112,7 @@ namespace Counters
     /*!
      * @brief Marks the cache unsynched.
      */
-    void reset(void) const {
+    void reset(void) {
       synched_ = false;
     }
     
