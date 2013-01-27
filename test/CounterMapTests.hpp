@@ -535,6 +535,32 @@ TEST_F(CounterMapTests, APIs)
       EXPECT_TRUE( counterMap246.equals( backup000 ) );
       counterMap246 = backup246;
 
+      // *=
+      counterMap123 *= 2.0;
+      EXPECT_TRUE( counterMap123.equals( backup246 ) );
+      counterMap123 = backup123;
+
+      counterMap246 *= 0.0;
+      EXPECT_TRUE( counterMap246.equals( backup000 ) );
+      counterMap246 = backup246;
+
+      counterMap000 *= 9.9;
+      EXPECT_TRUE( counterMap000.equals( backup000 ) );
+      counterMap000 = backup000;
+ 
+      // /=
+      counterMap246 /= 2.0;
+      EXPECT_TRUE( counterMap246.equals( backup123 ) );
+      counterMap246 = backup246;
+      
+      counterMap123 /= 0.5;
+      EXPECT_TRUE( counterMap123.equals( backup246 ) );
+      counterMap123 = backup123;
+
+      counterMap000 /= 9.9;
+      EXPECT_TRUE( counterMap000.equals( backup000 ) );
+      counterMap000 = backup000;
+ 
       // +
       EXPECT_TRUE( backup246.equals(                        backup123   +                        backup123   ) );
       EXPECT_TRUE( backup246.equals(                        backup123   + std::move(CounterMap_t(backup123)) ) );
@@ -551,6 +577,29 @@ TEST_F(CounterMapTests, APIs)
       EXPECT_TRUE( backup123.equals(                        backup246   - std::move(CounterMap_t(backup123)) ) );
       EXPECT_TRUE( backup123.equals( std::move(CounterMap_t(backup246)) - std::move(CounterMap_t(backup123)) ) );
       EXPECT_TRUE( backup123.equals( std::move(CounterMap_t(backup246)) -                        backup123   ) );
+
+      // *
+      EXPECT_TRUE( backup246.equals(                        backup123   * 2.0 ) );
+      EXPECT_TRUE( backup246.equals( std::move(CounterMap_t(backup123)) * 2.0 ) );
+      EXPECT_TRUE( backup123.equals(                        backup246   * 0.5 ) );
+      EXPECT_TRUE( backup123.equals( std::move(CounterMap_t(backup246)) * 0.5 ) );
+      EXPECT_TRUE( backup000.equals(                        backup000   * 9.9 ) );
+      EXPECT_TRUE( backup000.equals( std::move(CounterMap_t(backup000)) * 9.9 ) );
+
+      EXPECT_TRUE( backup246.equals( 2.0 *                        backup123   ) );
+      EXPECT_TRUE( backup246.equals( 2.0 * std::move(CounterMap_t(backup123)) ) );
+      EXPECT_TRUE( backup123.equals( 0.5 *                        backup246   ) );
+      EXPECT_TRUE( backup123.equals( 0.5 * std::move(CounterMap_t(backup246)) ) );
+      EXPECT_TRUE( backup000.equals( 9.9 *                        backup000   ) );
+      EXPECT_TRUE( backup000.equals( 9.9 * std::move(CounterMap_t(backup000)) ) );
+
+      // /
+      EXPECT_TRUE( backup246.equals(                        backup123   / 0.5 ) );
+      EXPECT_TRUE( backup246.equals( std::move(CounterMap_t(backup123)) / 0.5 ) );
+      EXPECT_TRUE( backup123.equals(                        backup246   / 2.0 ) );
+      EXPECT_TRUE( backup123.equals( std::move(CounterMap_t(backup246)) / 2.0 ) );
+      EXPECT_TRUE( backup000.equals(                        backup000   / 9.9 ) );
+      EXPECT_TRUE( backup000.equals( std::move(CounterMap_t(backup000)) / 9.9 ) );
     }
   }
 

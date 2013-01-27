@@ -349,6 +349,48 @@ namespace Counters
   CounterMap<K, V> operator-(CounterMap<K, V> && tmp, CounterMap<K, V> && rhs)
   { tmp -= rhs; return std::move(tmp); }
 
+  template <typename K, typename V>
+  CounterMap<K, V>& CounterMap<K, V>::operator*=(typename CounterMap<K, V>::Count_t num)
+  {
+    for( typename CounterMap<K, V>::CoreMap_t::iterator i( coreMap_.begin() );
+	 i != coreMap_.end(); ++i )
+      {
+	i->second *= num;
+      }
+
+    return *this;
+  }
+
+  template <typename K, typename V>
+  CounterMap<K, V>& CounterMap<K, V>::operator/=(typename CounterMap<K, V>::Count_t num)
+  { return operator*=( 1.0 / num ); }
+
+
+
+  template <typename K, typename V>
+  CounterMap<K, V> operator*(CounterMap<K, V> const& cm, typename CounterMap<K, V>::Count_t num)
+  { CounterMap<K, V> tmp = cm;  tmp *= num; return tmp; }
+
+  template <typename K, typename V>
+  CounterMap<K, V> operator*(CounterMap<K, V> && cm, typename CounterMap<K, V>::Count_t num)
+  { cm *= num; return std::move(cm); }
+
+  template <typename K, typename V>
+  CounterMap<K, V> operator*(typename CounterMap<K, V>::Count_t num, CounterMap<K, V> const& cm)
+  { CounterMap<K, V> tmp = cm;  tmp *= num; return tmp; }
+
+  template <typename K, typename V>
+  CounterMap<K, V> operator*(typename CounterMap<K, V>::Count_t num, CounterMap<K, V> && cm)
+  { cm *= num; return std::move(cm); }
+
+  template <typename K, typename V>
+  CounterMap<K, V> operator/(CounterMap<K, V> const& cm, typename CounterMap<K, V>::Count_t num)
+  { CounterMap<K, V> tmp = cm;  tmp /= num; return tmp; }
+
+  template <typename K, typename V>
+  CounterMap<K, V> operator/(CounterMap<K, V> && cm, typename CounterMap<K, V>::Count_t num)
+  { cm /= num; return std::move(cm); }
+
   //----------------- Output Operator ------------------------
 
   template <typename K, typename V>

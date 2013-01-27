@@ -27,6 +27,14 @@ namespace Counters
   template <typename K, typename V> CounterMap<K, V> operator-(CounterMap<K, V> const&, CounterMap<K, V> const&);
   template <typename K, typename V> CounterMap<K, V> operator-(CounterMap<K, V>     &&, CounterMap<K, V> const&);
   template <typename K, typename V> CounterMap<K, V> operator-(CounterMap<K, V>     &&, CounterMap<K, V>     &&);
+  
+  template <typename K, typename V> CounterMap<K, V> operator*(CounterMap<K, V> const&, typename CounterMap<K, V>::Count_t);
+  template <typename K, typename V> CounterMap<K, V> operator*(CounterMap<K, V>     &&, typename CounterMap<K, V>::Count_t);
+  template <typename K, typename V> CounterMap<K, V> operator*(typename CounterMap<K, V>::Count_t, CounterMap<K, V> const&);
+  template <typename K, typename V> CounterMap<K, V> operator*(typename CounterMap<K, V>::Count_t, CounterMap<K, V>     &&);
+
+  template <typename K, typename V> CounterMap<K, V> operator/(CounterMap<K, V> const&, typename CounterMap<K, V>::Count_t);
+  template <typename K, typename V> CounterMap<K, V> operator/(CounterMap<K, V>     &&, typename CounterMap<K, V>::Count_t);
 
   /*!
    * @brief Outputs the CounterMap in a human readable format.
@@ -357,7 +365,45 @@ namespace Counters
     /*! @overload operator- <K, V>(CounterMap const&, CounterMap const&) */
     friend CounterMap operator- <K, V>(CounterMap     &&, CounterMap     &&);
     /*! @overload operator- <K, V>(CounterMap const&, CounterMap const&) */
-    //friend CounterMap operator- <K, V>(CounterMap const&, CounterMap     &&);
+
+    /*!
+     * @brief Multiplies every count stored in this CounterMap by num.
+     * @param num Number by which each count is scaled.
+     * @return This CounterMap.
+     */
+    CounterMap& operator*=(Count_t scale);
+
+    /*!
+     * @brief Divides every count stored in this CounterMap by num.
+     * @param num Number by which each count is divided.
+     * @return This CounterMap.
+     */
+    CounterMap& operator/=(Count_t num);
+
+    /*!
+     * @brief Multiplies all the counts of the CounterMap by the number.
+     * @param cm CounterMap whose counts are multiplied.
+     * @param num Number by which all the counts are multiplied.
+     * @return New CounterMap whose counts num times those of cm.
+     */
+    friend CounterMap operator* <K, V>(CounterMap<K, V> const& cm, Count_t num);
+    /*! @overload operator*(CounterMap<K, V> const& cm, Count_t num) */
+    friend CounterMap operator* <K, V>(CounterMap<K, V>     && cm, Count_t num);
+    /*! @overload operator*(CounterMap<K, V> const& cm, Count_t num) */
+    friend CounterMap operator* <K, V>(Count_t num, CounterMap<K, V> const& cm);
+    /*! @overload operator*(CounterMap<K, V> const& cm, Count_t num) */
+    friend CounterMap operator* <K, V>(Count_t num, CounterMap<K, V>     && cm);
+
+    /*!
+     * @brief Divides all the counts of the CounterMap by the number.
+     * @param cm CounterMap whose counts are divided.
+     * @param num Number by which all the counts are divided.
+     * @return New CounterMap whose counts 1.0/num times those of cm.
+     */
+    friend CounterMap operator/ <K, V>(CounterMap<K, V> const& cm, Count_t num);
+    /*! @overload operator/(CounterMap<K, V> const& cm, Count_t num) */
+    friend CounterMap operator/ <K, V>(CounterMap<K, V>     && cm, Count_t num);
+
     /*!  @} */
     
   protected:
