@@ -7,7 +7,7 @@
 // to point from here to the header declaring the typename.
 // Reason 2: EDE and Semantic autocompletion needs this to help with member
 // variables and STL typenamees included from the header.
-#include "Counter.h"
+#include "Counters/Counter.hpp"
 
 namespace Counters
 {

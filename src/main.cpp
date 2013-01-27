@@ -2,10 +2,10 @@
 
 #include "IteratorTypeErasure/any_iterator/any_iterator.hpp"
 
-#include "MapTypeErasure/AnyMap.hpp"
+#include "AnyMap/AnyMap.hpp"
 
-#include "CounterFactories.h"
-#include "CounterMap.h"
+#include "Counters/CounterFactories.hpp"
+#include "Counters/CounterMap.hpp"
 
 #include <boost/unordered_map.hpp>
 #include <map>

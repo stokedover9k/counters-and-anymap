@@ -1,4 +1,3 @@
-SET(client_src main.cpp)
+SET(main_source_files main.cpp)
 
-ADD_EXECUTABLE(main ${client_src})
-
+ADD_EXECUTABLE(main ${main_source_files})

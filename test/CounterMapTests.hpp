@@ -1,8 +1,8 @@
 #ifndef __COUNTER_MAP_TESTS_HPP__
 #define __COUNTER_MAP_TESTS_HPP__
 
-#include "CounterMap.h"
-#include "MapTypeErasure/AnyMap.hpp"
+#include "Counters/CounterMap.hpp"
+#include "AnyMap/AnyMap.hpp"
 #include <ostream>
 #include <fstream>
 #include <stdlib.h>

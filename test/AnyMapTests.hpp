@@ -1,7 +1,7 @@
 #ifndef __ANY_MAP_TESTS_HPP__
 #define __ANY_MAP_TESTS_HPP__
 
-#include "MapTypeErasure/AnyMap.hpp"
+#include "AnyMap/AnyMap.hpp"
 #include <boost/unordered_map.hpp>
 #include <map>
 

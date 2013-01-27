@@ -7,8 +7,8 @@
 #ifndef __COUNTER_FACTORIES_H__
 #define __COUNTER_FACTORIES_H__
 
-#include "Counter.h"
-#include "MapTypeErasure/AnyMap.hpp"
+#include "Counters/Counter.hpp"
+#include "AnyMap/AnyMap.hpp"
 
 namespace Counters
 {

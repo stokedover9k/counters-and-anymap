@@ -1,6 +1,5 @@
 #define __COUNTER_DEBUG__ on
 
-
 #include "gtest/gtest.h"
 
 #include "AnyMapTests.hpp"

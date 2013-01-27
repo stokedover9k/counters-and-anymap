@@ -53,8 +53,8 @@ namespace MapTypeErasure
    * - size_type MapType::size() const
    * - size_type MapType::max_size() const
    * - V& MapType::operator[](K const &)
-   * + V& MapType::operator[](K &&)
-   * + V& MapType::at(K const &)
+   * - V& MapType::operator[](K &&) (+)
+   * - V& MapType::at(K const &) (+)
    * - V& MapType::at(K const &) const
    * - size_type MapType::count(K const &) const
    * - itr find(K const &)

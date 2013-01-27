@@ -12,8 +12,9 @@
 #include <limits>
 #include <cmath>
 #include <utility>
-#include "MapTypeErasure/AnyMap.hpp"
-#include "Util/NumCache.h"
+
+#include "AnyMap/AnyMap.hpp"
+#include "Counters/NumCache.hpp"
 
 
 namespace Counters
@@ -35,8 +36,8 @@ namespace Counters
    *
    * The Counter is essentially a map (this implementation uses AnyMap as the
    * underlying map). The key type of this map is the Counter template's V type
-   * parameter. The mapped type of this map is the Counter::Count_t type (currently,
-   * this is 'double').
+   * parameter. The mapped type of this map is the Counter::Count_t type 
+   * (currently, this is 'double').
    *
    * Additionally to keeping the counts associated with each value, the Counter
    * keeps a cache. This cache stores the total count (the sum of all counts 
@@ -106,8 +107,8 @@ namespace Counters
     Counter( InputIterator i1, InputIterator i2, Count_t count=1.0 );
 
     /*!
-     * @brief Standard Assignment. Copies the values and their associated counts as 
-     * well as the cache.
+     * @brief Standard Assignment. Copies the values and their associated counts
+     * as well as the cache.
      * @param rhs Original counter to be copied.
      * @return This counter.
      */
@@ -298,9 +299,8 @@ namespace Counters
      * @param other Other counter to be compared to this counter.
      * @param precision The difference allowed between the corresponding counts
      * before the couters are declared not equal.
-     * @return TRUE if all corresponding counts exist and are within the specified
-     * margin, FALSE 
-     * otherwise.
+     * @return TRUE if all corresponding counts exist and are within the 
+     * specified margin, FALSE otherwise.
      */
     bool equals(const Counter& other, Count_t precision =
 		std::numeric_limits<Count_t>::epsilon() ) const;
@@ -448,6 +448,6 @@ namespace Counters
 
 };
 
-#include "counterDetails/CounterImpl.hpp"
+#include "Counters/details/_Counter.IMPL.hpp"
 
 #endif //__COUNTER_H__

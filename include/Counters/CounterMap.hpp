@@ -9,10 +9,11 @@
 
 #include <ostream>
 #include <utility>
-#include "Counter.h"
-#include "CounterFactories.h"
-#include "Util/NumCache.h"
-#include "MapTypeErasure/AnyMap.hpp"
+
+#include "Counters/Counter.hpp"
+#include "Counters/CounterFactories.hpp"
+#include "Counters/NumCache.hpp"
+#include "AnyMap/AnyMap.hpp"
 
 namespace Counters
 {
@@ -383,6 +384,6 @@ namespace Counters
 
 };
 
-#include "counterDetails/CounterMapImpl.hpp"
+#include "Counters/details/_CounterMap.IMPL.hpp"
 
 #endif //__COUNTER_MAP_H__
